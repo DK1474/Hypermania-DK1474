@@ -17,7 +17,7 @@ MonoBehaviour:
   Frames:
   - Boxes:
     - Name: Hurt
-      CenterLocal: {x: -0.25247538, y: 0.004950495}
+      CenterLocal: {x: -0.25247538, y: 0.011780364}
       SizeLocal: {x: 1.0742574, y: 1.529703}
       Props:
         Kind: 0
@@ -26,7 +26,7 @@ MonoBehaviour:
         BlockstunTicks: 0
         Knockback: {x: 0, y: 0}
     - Name: Hit
-      CenterLocal: {x: 0.47277233, y: -0.009900995}
+      CenterLocal: {x: 0.4796022, y: -0.009900995}
       SizeLocal: {x: 0.63366336, y: 0.17326735}
       Props:
         Kind: 1
@@ -36,7 +36,7 @@ MonoBehaviour:
         Knockback: {x: 0, y: 0}
   - Boxes:
     - Name: Hurt
-      CenterLocal: {x: -0.25247538, y: 0.004950495}
+      CenterLocal: {x: -0.25247538, y: 0.011780364}
       SizeLocal: {x: 1.0742574, y: 1.529703}
       Props:
         Kind: 0
@@ -45,7 +45,7 @@ MonoBehaviour:
         BlockstunTicks: 0
         Knockback: {x: 0, y: 0}
     - Name: Hit
-      CenterLocal: {x: 0.47277233, y: -0.009900995}
+      CenterLocal: {x: 0.4796022, y: -0.009900995}
       SizeLocal: {x: 0.63366336, y: 0.17326735}
       Props:
         Kind: 1
