@@ -209,9 +209,9 @@ namespace Game.Sim
             {
                 return;
             }
+            // TODO: apply some landing lag here
             if (IsAerial)
             {
-                // TODO: apply some landing lag here
                 Mode = FighterMode.Neutral;
                 ModeT = int.MaxValue;
                 AnimState = CharacterAnimation.Idle;
