@@ -32,13 +32,13 @@ namespace Utils
 
         private int Index(int i) => (_head + i) & Mask;
 
-        public T this[int index]
+        public ref T this[int index]
         {
             get
             {
                 if ((uint)index >= (uint)_count)
                     throw new ArgumentOutOfRangeException(nameof(index));
-                return _buffer[Index(index)];
+                return ref _buffer[Index(index)];
             }
         }
 
@@ -57,19 +57,19 @@ namespace Utils
             _count++;
         }
 
-        public T Front()
+        public ref T Front()
         {
             if (_count == 0)
                 throw new InvalidOperationException();
-            return _buffer[_head];
+            return ref _buffer[_head];
         }
 
-        public T Back()
+        public ref T Back()
         {
             if (_count == 0)
                 throw new InvalidOperationException();
             int idx = Index(_count - 1);
-            return _buffer[idx];
+            return ref _buffer[idx];
         }
 
         public T PopFront()

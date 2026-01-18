@@ -94,8 +94,8 @@ namespace Game.Sim
                     new ManiaConfig
                     {
                         NumKeys = 4,
-                        HitHalfRange = 4,
-                        MissHalfRange = 3,
+                        HitHalfRange = 8,
+                        MissHalfRange = 6,
                     }
                 );
             }
@@ -129,25 +129,53 @@ namespace Game.Sim
             }
             else if (GameMode == GameMode.Mania)
             {
-                int shouldEnd = 0;
                 for (int i = 0; i < Manias.Length; i++)
                 {
                     List<ManiaEvent> maniaEvents = new List<ManiaEvent>();
-                    if (!Manias[i].Tick(Frame, inputs[i].input, maniaEvents))
+                    Manias[i].Tick(Frame, inputs[i].input, maniaEvents);
+                    // TODO: make note hits do something to the character here
+
+                    foreach (ManiaEvent ev in maniaEvents)
                     {
-                        shouldEnd++;
+                        switch (ev.Kind)
+                        {
+                            case ManiaEventKind.End:
+                                GameMode = GameMode.Fighting;
+                                break;
+                        }
                     }
-                    foreach (var ev in maniaEvents)
-                    {
-                        Debug.Log($"{ev.Kind}, {ev.Early}, {ev.Offset}");
-                    }
-                }
-                if (shouldEnd == Manias.Length)
-                {
-                    GameMode = GameMode.Fighting;
                 }
             }
 
+            DoCollisionStep(characters, config);
+
+            // Apply any velocities set during movement or through knockback.
+            for (int i = 0; i < Fighters.Length; i++)
+            {
+                Fighters[i].UpdatePosition(Frame, config);
+            }
+
+            for (int i = 0; i < Fighters.Length; i++)
+            {
+                Fighters[i].FaceTowards(Fighters[i ^ 1].Position);
+            }
+
+            // Tick the state machine, decreasing any forms of hitstun/blockstun and/or move timers, allowing us to
+            // become actionable next frame, etc.
+            for (int i = 0; i < Fighters.Length; i++)
+            {
+                Fighters[i].TickStateMachine(Frame, config);
+            }
+
+            // Apply and change the state that derives only from passive factors (movements, the Mode, etc)
+            for (int i = 0; i < Fighters.Length; i++)
+            {
+                Fighters[i].ApplyPassiveState(Frame, config);
+            }
+        }
+
+        private void DoCollisionStep(CharacterConfig[] characters, GlobalConfig config)
+        {
             // Each fighter then adds their hit/hurtboxes to the physics context, which will solve and find all
             // collisions. It is our job to then handle them.
             for (int i = 0; i < Fighters.Length; i++)
@@ -210,22 +238,26 @@ namespace Game.Sim
                         && !HurtHitCollisions.ContainsKey((owners.Item2, owners.Item1))
                     )
                     {
-                        Debug.Log("Queueing notes");
-                        for (int i = 0; i < 24; i++)
+                        // TODO: fix me, 30.72 is hardcoded ticks/beat
+                        // make the start frame always be on a multiple of 4 beats starting from 0
+                        sfloat ticksPerBeat = (sfloat)30.72;
+                        int barInterval = Mathsf.RoundToInt(ticksPerBeat * 4);
+                        Frame baseSt = Frame + 10;
+                        Frame stFrame = baseSt - baseSt.No % barInterval + barInterval;
+
+                        for (int i = 0; i < 16; i++)
                         {
                             Manias[owners.Item1]
                                 .QueueNote(
                                     i % 4,
                                     new ManiaNote
                                     {
-                                        Id = i,
                                         Length = 0,
-                                        // TODO: fix me, 30.72 is hardcoded ticks/beat
-                                        Tick = Frame + Mathsf.RoundToInt(i * (sfloat)30.72),
+                                        Tick = stFrame + Mathsf.RoundToInt(ticksPerBeat / 2 * i),
                                     }
                                 );
-                            // TODO: switch gamestate mode
                         }
+                        Manias[owners.Item1].Enable(stFrame + Mathsf.RoundToInt(ticksPerBeat / 2 * 16));
                         GameMode = GameMode.Mania;
                     }
                 }
@@ -243,30 +275,6 @@ namespace Game.Sim
             Physics.Clear();
             Collisions.Clear();
             HurtHitCollisions.Clear();
-
-            // Apply any velocities set during movement or through knockback.
-            for (int i = 0; i < Fighters.Length; i++)
-            {
-                Fighters[i].UpdatePosition(Frame, config);
-            }
-
-            for (int i = 0; i < Fighters.Length; i++)
-            {
-                Fighters[i].FaceTowards(Fighters[i ^ 1].Position);
-            }
-
-            // Tick the state machine, decreasing any forms of hitstun/blockstun and/or move timers, allowing us to
-            // become actionable next frame, etc.
-            for (int i = 0; i < Fighters.Length; i++)
-            {
-                Fighters[i].TickStateMachine(Frame, config);
-            }
-
-            // Apply and change the state that derives only from passive factors (movements, the Mode, etc)
-            for (int i = 0; i < Fighters.Length; i++)
-            {
-                Fighters[i].ApplyPassiveState(Frame, config);
-            }
         }
 
         private void HandleCollision(Physics<BoxProps>.Collision c, GlobalConfig config)

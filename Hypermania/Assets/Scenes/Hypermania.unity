@@ -570,6 +570,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 593b24fc0b39d1082a5b28d0cdfdd4db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Config:
+    Width: 3
+    Height: 5.3333335
+    Border: 0.1
+    Gap: 0.1
+    HitLine: 0.804167
+    ScrollSpeed: 0.05
+    NoteHeight: 0.208333
+    Background: {fileID: -5601152777036854194, guid: eee69862c9da77d4e9c779353d01a970, type: 3}
+    Note: {fileID: -1927351262277573665, guid: e8faf1ba3f363d219b11a69f037cc2c8, type: 3}
 --- !u!4 &2114326935
 Transform:
   m_ObjectHideFlags: 0

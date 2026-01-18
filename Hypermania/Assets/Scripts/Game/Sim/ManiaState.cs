@@ -8,7 +8,6 @@ namespace Game.Sim
     [MemoryPackable]
     public partial struct ManiaNote
     {
-        public int Id;
         public Frame Tick;
         public int Length;
     }
@@ -23,6 +22,7 @@ namespace Game.Sim
     {
         Hit,
         Missed,
+        End,
     }
 
     [MemoryPackable]
@@ -41,6 +41,11 @@ namespace Game.Sim
         /// If the note was missed, if it was hit early or late
         /// </summary>
         public bool Early;
+
+        public static ManiaEvent EndEvent()
+        {
+            return new ManiaEvent { Kind = ManiaEventKind.End };
+        }
 
         public static ManiaEvent HitEvent(in ManiaNote note, int offset)
         {
@@ -92,6 +97,7 @@ namespace Game.Sim
         const int MAX_NOTES = 100;
         public ManiaConfig Config;
         public ManiaNoteChannel[] Channels;
+        public Frame EndFrame;
         private static readonly InputFlags[] _channelInput =
         {
             InputFlags.Mania1,
@@ -111,7 +117,13 @@ namespace Game.Sim
             {
                 sim.Channels[i] = new ManiaNoteChannel { Notes = new Deque<ManiaNote>(MAX_NOTES) };
             }
+            sim.EndFrame = Frame.NullFrame;
             return sim;
+        }
+
+        public void Enable(Frame endFrame)
+        {
+            EndFrame = endFrame;
         }
 
         public void QueueNote(int channel, in ManiaNote note)
@@ -119,19 +131,14 @@ namespace Game.Sim
             Channels[channel].Notes.PushBack(note);
         }
 
-        /// <summary>
-        /// Returns false if the mania sequence is over, and true otherwise
-        /// </summary>
-        public bool Tick(Frame frame, GameInput input, List<ManiaEvent> outEvents)
+        public void Tick(Frame frame, GameInput input, List<ManiaEvent> outEvents)
         {
-            bool hasNote = false;
             for (int i = 0; i < Channels.Length; i++)
             {
                 if (Channels[i].Notes.Count == 0)
                 {
                     continue;
                 }
-                hasNote = true;
                 ManiaNote note = Channels[i].Notes.Front();
                 Frame noteTick = note.Tick;
                 bool hasInput = input.Flags.HasFlag(_channelInput[i]);
@@ -166,7 +173,11 @@ namespace Game.Sim
                     Channels[i].Notes.PopFront();
                 }
             }
-            return hasNote;
+            if (frame == EndFrame)
+            {
+                outEvents.Add(ManiaEvent.EndEvent());
+                EndFrame = Frame.NullFrame;
+            }
         }
     }
 }

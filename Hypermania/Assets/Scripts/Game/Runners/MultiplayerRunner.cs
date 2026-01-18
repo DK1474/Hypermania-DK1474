@@ -131,7 +131,7 @@ namespace Game.Runners
                 }
             }
 
-            _view.Render(_curState);
+            _view.Render(_curState, _config);
         }
     }
 }

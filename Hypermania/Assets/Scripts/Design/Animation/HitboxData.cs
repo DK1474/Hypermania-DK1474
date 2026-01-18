@@ -22,6 +22,8 @@ namespace Design.Animation
         public bool StartsRhythmCombo;
         public Vector2 Knockback;
 
+        // NOTE: ensure that any new fields added above are added to the equals implementation: otherwise they will not
+        // be editable in the move builder
         public bool Equals(BoxProps other) =>
             Kind == other.Kind
             && HitstunTicks == other.HitstunTicks

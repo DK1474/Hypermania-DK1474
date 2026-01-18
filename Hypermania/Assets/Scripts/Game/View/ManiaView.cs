@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Game.Sim;
 using UnityEngine;
@@ -5,9 +6,9 @@ using Utils;
 
 namespace Game.View
 {
+    [Serializable]
     public struct ManiaViewConfig
     {
-        public Vector2 Center;
         public float Width;
         public float Height;
         public float Border;
@@ -15,18 +16,26 @@ namespace Game.View
         public float HitLine;
         public float ScrollSpeed;
         public float NoteHeight;
+        public Sprite Background;
+        public Sprite Note;
     }
 
+    [RequireComponent(typeof(SpriteRenderer))]
     public class ManiaView : MonoBehaviour
     {
         private ManiaViewConfig _config;
-        private static readonly float[] _channelGapsToCenter = { -2.5f, -1.5f, -0.5f, 0.5f, 1.5f, 2.5f };
+        private SpriteRenderer _spriteRenderer;
+        private static readonly float[] _channelGapsToCenter = { -0.5f, 0.5f, -1.5f, 1.5f, -2.5f, 2.5f };
         private List<GameObject> _activeNotes;
 
-        public void Init(in ManiaViewConfig config)
+        public void Init(Vector2 center, in ManiaViewConfig config)
         {
             _config = config;
+            transform.position = center;
             _activeNotes = new List<GameObject>();
+            _spriteRenderer = GetComponent<SpriteRenderer>();
+            _spriteRenderer.sprite = _config.Background;
+            gameObject.SetActive(false);
         }
 
         public void DeInit()
@@ -36,10 +45,13 @@ namespace Game.View
                 Destroy(_activeNotes[i]);
             }
             _activeNotes = null;
+            _spriteRenderer.sprite = null;
+            _spriteRenderer = null;
         }
 
         public void Render(Frame frame, in ManiaState state)
         {
+            gameObject.SetActive(state.EndFrame != Frame.NullFrame);
             int viewId = 0;
             for (int i = 0; i < state.Config.NumKeys; i++)
             {
@@ -57,7 +69,6 @@ namespace Game.View
             for (int i = viewId; i < _activeNotes.Count; i++)
             {
                 _activeNotes[i].SetActive(false);
-                _activeNotes[i].transform.position = new Vector2(9999, 9999);
             }
         }
 
@@ -66,34 +77,29 @@ namespace Game.View
             // should only add a single new note to the view
             while (_activeNotes.Count <= viewId)
             {
-                GameObject noteView = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                GameObject noteView = new GameObject("Mania Note");
                 noteView.transform.SetParent(transform);
+                SpriteRenderer sp = noteView.AddComponent<SpriteRenderer>();
+                sp.sprite = _config.Note;
                 _activeNotes.Add(noteView);
             }
             GameObject view = _activeNotes[viewId];
             view.SetActive(true);
 
             float x = ChannelX(numChannels, channel);
-            float width = ChannelWidth(numChannels);
-            float y =
-                (note.Tick - frame) * _config.ScrollSpeed + _config.HitLine + _config.Center.y - _config.Height / 2;
-            if (y < _config.Center.y - _config.Height / 2)
-            {
-                return true;
-            }
-            if (y > _config.Center.y + _config.Height / 2)
+            float y = (note.Tick - frame) * _config.ScrollSpeed + _config.HitLine - _config.Height / 2;
+            if (y > _config.Height / 2 - _config.NoteHeight / 2)
             {
                 return false;
             }
-            view.transform.position = new Vector2(x, y);
-            view.transform.localScale = new Vector2(width, _config.NoteHeight);
+            view.transform.SetLocalPositionAndRotation(new Vector3(x, y, -1), Quaternion.identity);
             return true;
         }
 
         private float ChannelWidth(int numChannels) =>
-            (_config.Width - _config.Gap * (numChannels + 1) - 2 * _config.Border) / numChannels;
+            (_config.Width - _config.Gap * (numChannels - 1) - 2 * _config.Border) / numChannels;
 
         private float ChannelX(int numChannels, int channel) =>
-            _config.Center.x + _channelGapsToCenter[channel] * (ChannelWidth(numChannels) + _config.Gap);
+            _channelGapsToCenter[channel] * (ChannelWidth(numChannels) + _config.Gap);
     }
 }

@@ -26,11 +26,11 @@ namespace Game
             if (Keyboard.current.lKey.isPressed)
                 input |= InputFlags.SuperAttack;
 
-            if (Keyboard.current.sKey.isPressed)
+            if (Keyboard.current.aKey.isPressed)
                 input |= InputFlags.Mania5;
-            if (Keyboard.current.dKey.isPressed)
+            if (Keyboard.current.sKey.isPressed)
                 input |= InputFlags.Mania3;
-            if (Keyboard.current.fKey.isPressed)
+            if (Keyboard.current.dKey.isPressed)
                 input |= InputFlags.Mania1;
             if (Keyboard.current.jKey.isPressed)
                 input |= InputFlags.Mania2;
