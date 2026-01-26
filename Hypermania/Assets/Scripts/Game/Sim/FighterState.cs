@@ -117,11 +117,11 @@ namespace Game.Sim
             }
             if (Location(config) == FighterLocation.Grounded)
                 Velocity.x = 0;
-            if (input.Flags.HasFlag(InputFlags.Left) && Location(config) == FighterLocation.Grounded)
+            if ((input.Flags & InputFlags.Left) == InputFlags.Left && Location(config) == FighterLocation.Grounded)
                 Velocity.x += (sfloat)(-characterConfig.Speed);
-            if (input.Flags.HasFlag(InputFlags.Right) && Location(config) == FighterLocation.Grounded)
+            if ((input.Flags & InputFlags.Right) == InputFlags.Right && Location(config) == FighterLocation.Grounded)
                 Velocity.x += (sfloat)characterConfig.Speed;
-            if (input.Flags.HasFlag(InputFlags.Up) && Location(config) == FighterLocation.Grounded)
+            if ((input.Flags & InputFlags.Up) == InputFlags.Up && Location(config) == FighterLocation.Grounded)
                 Velocity.y = (sfloat)characterConfig.JumpVelocity;
         }
 
@@ -131,7 +131,7 @@ namespace Game.Sim
             {
                 return;
             }
-            if (input.Flags.HasFlag(InputFlags.LightAttack))
+            if ((input.Flags & InputFlags.LightAttack) == InputFlags.LightAttack)
             {
                 switch (Location(config))
                 {
@@ -154,7 +154,7 @@ namespace Game.Sim
                         break;
                 }
             }
-            else if (input.Flags.HasFlag(InputFlags.SuperAttack))
+            else if ((input.Flags & InputFlags.SuperAttack) == InputFlags.SuperAttack)
             {
                 switch (Location(config))
                 {
