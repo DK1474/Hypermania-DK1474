@@ -1,10 +1,12 @@
+using Game.View;
 using UnityEngine;
 
 public class PlayerTest : MonoBehaviour
 {
     public int maxHealth = 50;
     public int health = 50;
-    public HealthBarScript healthBar;
+    public HealthBarView healthBar;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -14,7 +16,8 @@ public class PlayerTest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Space)) {
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
             health -= 10;
             healthBar.SetHealth(health);
         }
