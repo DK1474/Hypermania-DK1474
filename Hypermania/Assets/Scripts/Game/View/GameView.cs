@@ -16,8 +16,12 @@ namespace Game.View
         private FighterView[] _fighters;
         private ManiaView[] _manias;
         private CharacterConfig[] _characters;
+        private float Zoom = 5f;
 
         public ManiaViewConfig Config;
+
+        [SerializeField]
+        private DJ_CameraControl CameraControl;
 
         public void Init(CharacterConfig[] characters)
         {
@@ -61,6 +65,19 @@ namespace Game.View
             {
                 interestPoints.Add((Vector2)state.Fighters[i].Position);
             }
+            // Debug testing for zoom, remove later
+            if (Input.GetKeyDown(KeyCode.P))
+            {
+                if (Zoom == 5f)
+                {
+                    Zoom = 4f;
+                }
+                else
+                {
+                    Zoom = 5f;
+                }
+            }
+            CameraControl.UpdateCamera(interestPoints, Zoom, Time.deltaTime);
         }
 
         public void DeInit()
