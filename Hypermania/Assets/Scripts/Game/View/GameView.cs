@@ -27,6 +27,8 @@ namespace Game.View
 
         [SerializeField]
         private CameraControl CameraControl;
+        
+        [SerializeField] private ComboCountView[] ComboViews;
 
         public void OnValidate()
         {
@@ -114,6 +116,30 @@ namespace Game.View
             }
             CameraControl.UpdateCamera(interestPoints, Zoom, Time.deltaTime);
             FighterIndicatorManager.Track(_fighters);
+
+            int LeftCombo = state.Fighters[1].ComboedCount;
+            bool LeftVisible = false;
+            if (LeftCombo >= 1)
+            {
+                LeftVisible = true;
+            }
+            ComboViews[0].SetVisibility(LeftVisible);
+            if (LeftVisible) 
+            {
+                ComboViews[0].SetComboCount(LeftCombo);
+            }
+
+            int RightCombo = state.Fighters[0].ComboedCount;
+            bool RightVisible = false;
+            if (RightCombo >= 1)
+            {
+                RightVisible = true;
+            }
+            ComboViews[1].SetVisibility(RightVisible);
+            if (RightVisible)
+            {
+            ComboViews[1].SetComboCount(RightCombo);
+            }
         }
 
         public void DeInit()

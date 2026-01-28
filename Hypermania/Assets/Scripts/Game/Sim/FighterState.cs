@@ -27,6 +27,7 @@ namespace Game.Sim
         public SVector2 Position;
         public SVector2 Velocity;
         public sfloat Health;
+        public int ComboedCount;
         public InputHistory InputH;
 
         public CharacterState State { get; private set; }
@@ -62,7 +63,13 @@ namespace Game.Sim
             state.FacingDir = facingDirection;
             return state;
         }
-
+        public void DoFrameStart()
+        {
+            if (State == CharacterState.Idle)
+            {
+                ComboedCount = 0;
+            }
+        }
         public FighterLocation Location(GlobalConfig config)
         {
             if (Position.y > (sfloat)config.GroundY)
@@ -152,10 +159,17 @@ namespace Game.Sim
 
         public void ApplyActiveState(Frame frame, CharacterConfig characterConfig, GlobalConfig config)
         {
-            if (State != CharacterState.Idle && State != CharacterState.Walk && State != CharacterState.Jump)
-            {
-                return;
-            }
+            int tick = frame - StateStart;
+
+            bool canStartAttack =
+            State == CharacterState.Idle ||
+            State == CharacterState.Walk ||
+            State == CharacterState.Jump ||
+            // allow cancelling out of attacks after a few frames:
+            (State == CharacterState.LightAttack && tick >= 10) ||
+            (State == CharacterState.SuperAttack && tick >= 10);
+
+            if (!canStartAttack) return;
             if (InputH.PressedRecently(InputFlags.LightAttack, 8))
             {
                 switch (Location(config))
@@ -275,6 +289,8 @@ namespace Game.Sim
             Health -= props.Damage;
 
             Velocity = (SVector2)props.Knockback;
+
+            ComboedCount++;
         }
 
         public void ApplyClank(Frame frame, GlobalConfig config)
