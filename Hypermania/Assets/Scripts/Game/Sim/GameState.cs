@@ -103,29 +103,30 @@ namespace Game.Sim
             return state;
         }
 
-        public bool Advance(
+        public void Advance(
             (GameInput input, InputStatus status)[] inputs,
             CharacterConfig[] characters,
             GlobalConfig config
         )
         {
+            if (inputs.Length != characters.Length || characters.Length != Fighters.Length)
+            {
+                throw new InvalidOperationException("invalid inputs and characters to advance game state with");
+            }
+            Frame += 1;
+
             // Reset positions and state for a new round.
             if (GameMode == GameMode.Starting)
             {
                 for (int i = 0; i < Fighters.Length; i++)
                 {
-                    Fighters[i].Health = 100; // Temporary, should be set to max health of the character.
+                    Fighters[i].Health = characters[i].Health;
                     sfloat xPos = i - ((sfloat)characters.Length - 1) / 2;
                     FighterFacing facing = xPos > 0 ? FighterFacing.Left : FighterFacing.Right;
                     Fighters[i].RoundReset(new SVector2(xPos, sfloat.Zero), facing, characters[i]);
                 }
                 GameMode = GameMode.Fighting;
             }
-            if (inputs.Length != characters.Length || characters.Length != Fighters.Length)
-            {
-                throw new InvalidOperationException("invalid inputs and characters to advance game state with");
-            }
-            Frame += 1;
 
             // Push the current input into the input history, to read for buffering.
             for (int i = 0; i < Fighters.Length; i++)
@@ -169,16 +170,13 @@ namespace Game.Sim
             }
 
             DoCollisionStep(characters, config);
+
             for (int i = 0; i < Fighters.Length; i++)
             {
                 if (Fighters[i].Health <= 0)
                 {
-                    Fighters[i].Lives--;
-                    if (Fighters[i].Lives <= 0)
-                    {
-                        return true;
-                    }
                     GameMode = GameMode.Starting;
+                    return;
                 }
             }
 
@@ -202,6 +200,17 @@ namespace Game.Sim
             for (int i = 0; i < Fighters.Length; i++)
             {
                 Fighters[i].ApplyMovementState(Frame, config);
+            }
+        }
+
+        public bool FightersDead()
+        {
+            for (int i = 0; i < Fighters.Length; i++)
+            {
+                if (Fighters[i].Lives <= 0)
+                {
+                    return true;
+                }
             }
             return false;
         }

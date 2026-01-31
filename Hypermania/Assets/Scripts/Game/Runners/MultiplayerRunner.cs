@@ -126,10 +126,15 @@ namespace Game.Runners
                         loadReq.Cell.Load(out _curState);
                         break;
                     case RollbackRequestKind.AdvanceFrameReq:
-                        if (_curState.Advance(request.GetAdvanceFrameRequest().Inputs, _characters, _config))
-                            DeInit();
+                        _curState.Advance(request.GetAdvanceFrameRequest().Inputs, _characters, _config);
                         break;
                 }
+            }
+
+            if (_session.ConfirmedState().FightersDead())
+            {
+                DeInit();
+                return;
             }
 
             _view.Render(_curState, _config);
