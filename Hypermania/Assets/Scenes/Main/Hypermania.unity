@@ -1504,6 +1504,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 122.369
       objectReference: {fileID: 0}
+    - target: {fileID: 1650244786203126695, guid: 692614c6f0138c5709de58dbca0159e4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1650244786203126695, guid: 692614c6f0138c5709de58dbca0159e4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1962949958557439301, guid: 692614c6f0138c5709de58dbca0159e4, type: 3}
       propertyPath: m_LocalRotation.w
       value: 0.19591726
@@ -1523,6 +1531,18 @@ PrefabInstance:
     - target: {fileID: 3044627626071662498, guid: 692614c6f0138c5709de58dbca0159e4, type: 3}
       propertyPath: m_Name
       value: Nythea
+      objectReference: {fileID: 0}
+    - target: {fileID: 4217807302454724545, guid: 692614c6f0138c5709de58dbca0159e4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 5.4459
+      objectReference: {fileID: 0}
+    - target: {fileID: 4217807302454724545, guid: 692614c6f0138c5709de58dbca0159e4, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 5.4459
+      objectReference: {fileID: 0}
+    - target: {fileID: 4217807302454724545, guid: 692614c6f0138c5709de58dbca0159e4, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 5.4459
       objectReference: {fileID: 0}
     - target: {fileID: 4217807302454724545, guid: 692614c6f0138c5709de58dbca0159e4, type: 3}
       propertyPath: m_LocalPosition.x
