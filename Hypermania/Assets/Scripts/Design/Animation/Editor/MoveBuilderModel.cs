@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
 using Utils.SoftFloat;
@@ -11,6 +13,7 @@ namespace Design.Animation.Editors
         public GameObject CharacterPrefab;
         public AnimationClip Clip;
         public HitboxData Data;
+        public MoveBuilderVisibilityModel VisibilityModel;
 
         public int CurrentTick = 0;
         public int SelectedBoxIndex = -1;
@@ -38,6 +41,13 @@ namespace Design.Animation.Editors
 
         public bool HasAllInputs => CharacterPrefab && Clip && Data;
         public int TotalTicks => Data ? Mathf.Max(1, Data.TotalTicks) : 1;
+
+        public MoveBuilderModel()
+        {
+            VisibilityModel = new MoveBuilderVisibilityModel(this);
+            CurrentTick = 0;
+            SelectedBoxIndex = -1;
+        }
 
         public float CurrentTimeSeconds(int tps) => CurrentTick / (float)Mathf.Max(1, tps);
 
@@ -335,6 +345,7 @@ namespace Design.Animation.Editors
         }
 
         #endregion
+
 
         #region Helpers
         public void SaveAsset()

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Game;
 using UnityEditor;
 using UnityEngine;
@@ -18,8 +19,10 @@ namespace Design.Animation.Editors
 
             var newData = (HitboxData)
                 EditorGUILayout.ObjectField("Move Data (Asset)", m.Data, typeof(HitboxData), false);
+
             if (EditorGUI.EndChangeCheck())
             {
+                bool prefabChanged = newPrefab != m.CharacterPrefab;
                 bool clipChanged = newClip != m.Clip;
                 bool dataChanged = newData != m.Data;
 
@@ -29,6 +32,10 @@ namespace Design.Animation.Editors
 
                 if (clipChanged || dataChanged)
                     m.ResetTimelineSelection();
+                if (prefabChanged)
+                {
+                    m.VisibilityModel.RebuildVisibilityCache();
+                }
             }
 
             EditorGUILayout.Space(8);
@@ -199,6 +206,12 @@ namespace Design.Animation.Editors
             m.SetBox(m.SelectedBoxIndex, box);
         }
 
+        public void DrawVisibilityPanelHeader()
+        {
+            EditorGUILayout.LabelField("Visibility", EditorStyles.boldLabel);
+            EditorGUILayout.Space(4);
+        }
+
         public void DrawToolbar(MoveBuilderModel m)
         {
             using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
@@ -206,6 +219,13 @@ namespace Design.Animation.Editors
                 GUILayout.Label("Move Builder", EditorStyles.toolbarButton);
 
                 GUILayout.FlexibleSpace();
+
+                m.VisibilityModel.ShowVisibilityPanel = GUILayout.Toggle(
+                    m.VisibilityModel.ShowVisibilityPanel,
+                    "Visibility",
+                    EditorStyles.toolbarButton,
+                    GUILayout.Width(80)
+                );
 
                 using (new EditorGUI.DisabledScope(m == null || !m.HasUnsavedChanges))
                 {

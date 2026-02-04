@@ -1,5 +1,6 @@
 using Game;
 using UnityEditor;
+using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 
 namespace Design.Animation.Editors
@@ -13,11 +14,19 @@ namespace Design.Animation.Editors
         private MoveBuilderControlsView _controls;
         private MoveBuilderPreviewView _preview;
 
+        private TreeViewState _visibilityTreeState;
+        private SearchField _visibilitySearch;
+        private MoveBuilderVisibilityTreeView _visibilityTree;
+
         private void OnEnable()
         {
             _model = new MoveBuilderModel();
             _controls = new MoveBuilderControlsView();
             _preview = new MoveBuilderPreviewView();
+
+            _visibilityTreeState = new TreeViewState();
+            _visibilitySearch = new SearchField();
+            _visibilityTree = new MoveBuilderVisibilityTreeView(_visibilityTreeState, _model.VisibilityModel);
 
             EditorApplication.playModeStateChanged += OnPlayModeStateChanged;
         }
@@ -159,6 +168,41 @@ namespace Design.Animation.Editors
                     GUI.EndGroup();
 
                     _controls.DrawBottomTimelineLayout(_model, GameManager.TPS);
+                }
+
+                if (_model.VisibilityModel.ShowVisibilityPanel)
+                {
+                    using (
+                        new EditorGUILayout.VerticalScope(
+                            EditorStyles.helpBox,
+                            GUILayout.Width(280),
+                            GUILayout.ExpandHeight(true)
+                        )
+                    )
+                    {
+                        _controls.DrawVisibilityPanelHeader();
+
+                        if (_model.CharacterPrefab == null)
+                        {
+                            EditorGUILayout.HelpBox("Assign Character Prefab to edit visibility.", MessageType.Info);
+                        }
+                        else
+                        {
+                            Rect searchRect = GUILayoutUtility.GetRect(10, 18, GUILayout.ExpandWidth(true));
+                            _visibilityTree.searchString = _visibilitySearch.OnGUI(
+                                searchRect,
+                                _visibilityTree.searchString
+                            );
+
+                            Rect treeRect = GUILayoutUtility.GetRect(
+                                10,
+                                10,
+                                GUILayout.ExpandWidth(true),
+                                GUILayout.ExpandHeight(true)
+                            );
+                            _visibilityTree.OnGUI(treeRect);
+                        }
+                    }
                 }
             }
         }
