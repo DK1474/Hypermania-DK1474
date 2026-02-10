@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Design;
 using Game.Sim;
+using Game.View;
 using Netcode.P2P;
 using Netcode.Rollback;
 using Netcode.Rollback.Sessions;
@@ -24,7 +25,7 @@ namespace Game.Runners
                 SteamNetworkingIdentity
             >()
                 .WithNumPlayers(players.Count)
-                .WithFps(64);
+                .WithFps(GameManager.TPS);
             foreach ((PlayerHandle playerHandle, PlayerKind playerKind, SteamNetworkingIdentity address) in players)
             {
                 if (playerKind != PlayerKind.Local)
@@ -52,6 +53,7 @@ namespace Game.Runners
                 return;
             }
 
+            _inputBuffer.Clear();
             _inputBuffer.Saturate();
 
             float fpsDelta = 1.0f / GameManager.TPS;
@@ -71,8 +73,8 @@ namespace Game.Runners
                 return;
             }
 
-            _session.AddLocalInput(new PlayerHandle(0), _inputBuffer.Consume());
-            _session.AddLocalInput(new PlayerHandle(1), new GameInput(InputFlags.None));
+            _session.AddLocalInput(new PlayerHandle(0), _inputBuffer.Poll());
+            _session.AddLocalInput(new PlayerHandle(1), GameInput.None);
             List<RollbackRequest<GameState, GameInput>> requests = _session.AdvanceFrame();
             foreach (RollbackRequest<GameState, GameInput> request in requests)
             {
@@ -92,7 +94,13 @@ namespace Game.Runners
                 }
             }
 
-            _view.Render(_curState, _config);
+            if (_curState.FightersDead())
+            {
+                DeInit();
+                return;
+            }
+            InfoOverlayDetails details = new InfoOverlayDetails { HasPing = false, Ping = 0 };
+            _view.Render(_curState, _config, details);
         }
     }
 }
