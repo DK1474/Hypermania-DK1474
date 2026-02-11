@@ -11,21 +11,52 @@ namespace Design.Animation.Sorting.Editors
     {
         private SerializedProperty _sortingLayerIdProp;
         private SerializedProperty _baseOrderProp;
-        private SerializedProperty _itemsProp;
 
+        private readonly List<SpriteSortItem> _derivedItems = new();
         private ReorderableList _list;
-
-        private const float ThumbSize = 48f;
 
         private void OnEnable()
         {
             _sortingLayerIdProp = serializedObject.FindProperty("_sortingLayerId");
             _baseOrderProp = serializedObject.FindProperty("_baseOrder");
-            _itemsProp = serializedObject.FindProperty("_items");
 
+            BuildList();
+            RefreshDerivedItems();
+        }
+
+        public override void OnInspectorGUI()
+        {
+            serializedObject.Update();
+
+            int currentId = _sortingLayerIdProp.intValue;
+            int newId = SortingLayerUtil.PopupSortingLayer("Sorting Layer", currentId);
+            if (newId != currentId)
+                _sortingLayerIdProp.intValue = newId;
+
+            EditorGUILayout.PropertyField(_baseOrderProp);
+
+            EditorGUILayout.Space(6);
+
+            var group = (SpriteSortGroup)target;
+
+            // Keep list always in sync with current children orders.
+            RefreshDerivedItems();
+
+            _list.DoLayoutList();
+
+            if (serializedObject.ApplyModifiedProperties())
+            {
+                // If layer/base changes, re-apply (keeps renderer values synchronized).
+                ApplySorting(group);
+                RefreshDerivedItems();
+            }
+        }
+
+        private void BuildList()
+        {
             _list = new ReorderableList(
-                serializedObject,
-                _itemsProp,
+                _derivedItems, // IMPORTANT: not serialized; derived live
+                typeof(SpriteSortItem),
                 draggable: true,
                 displayHeader: true,
                 displayAddButton: false,
@@ -37,47 +68,54 @@ namespace Design.Animation.Sorting.Editors
                 EditorGUI.LabelField(rect, "Sprite Sort Items (drag to reorder)");
             };
 
-            _list.elementHeightCallback = index => ThumbSize + 8f;
+            _list.elementHeightCallback = _ => EditorGUIUtility.singleLineHeight + 4f;
 
             _list.drawElementCallback = (rect, index, isActive, isFocused) =>
             {
-                rect.y += 4f;
-                rect.height = ThumbSize;
+                rect.y += 2f;
+                rect.height = EditorGUIUtility.singleLineHeight;
 
-                var element = _itemsProp.GetArrayElementAtIndex(index);
-                var item = element.objectReferenceValue as SpriteSortItem;
+                if (index < 0 || index >= _derivedItems.Count)
+                    return;
+
+                var item = _derivedItems[index];
 
                 // Thumbnail rect
-                var thumbRect = new Rect(rect.x, rect.y, ThumbSize, ThumbSize);
+                var thumbRect = new Rect(
+                    rect.x,
+                    rect.y,
+                    EditorGUIUtility.singleLineHeight,
+                    EditorGUIUtility.singleLineHeight
+                );
 
                 // Object field rect
                 var fieldRect = new Rect(
-                    rect.x + ThumbSize + 8f,
+                    thumbRect.x + thumbRect.width + 4f,
                     rect.y,
-                    rect.width - (ThumbSize + 8f),
+                    EditorGUIUtility.singleLineHeight * 12f,
                     EditorGUIUtility.singleLineHeight
                 );
 
                 // Secondary info rect
                 var infoRect = new Rect(
-                    fieldRect.x,
-                    rect.y + EditorGUIUtility.singleLineHeight + 4f,
-                    fieldRect.width,
+                    fieldRect.x + fieldRect.width + 4f,
+                    rect.y,
+                    rect.width - thumbRect.width - fieldRect.width - 8f,
                     EditorGUIUtility.singleLineHeight
                 );
 
                 DrawThumb(thumbRect, item);
 
-                EditorGUI.BeginChangeCheck();
-                var newObj = EditorGUI.ObjectField(
-                    fieldRect,
-                    GUIContent.none,
-                    item,
-                    typeof(SpriteSortItem),
-                    allowSceneObjects: true
-                );
-                if (EditorGUI.EndChangeCheck())
-                    element.objectReferenceValue = newObj;
+                using (new EditorGUI.DisabledScope(true))
+                {
+                    EditorGUI.ObjectField(
+                        fieldRect,
+                        GUIContent.none,
+                        item,
+                        typeof(SpriteSortItem),
+                        allowSceneObjects: true
+                    );
+                }
 
                 if (item == null)
                 {
@@ -92,100 +130,74 @@ namespace Design.Animation.Sorting.Editors
                     }
                     else
                     {
-                        EditorGUI.LabelField(infoRect, $"{r.gameObject.name}  •  SpriteRenderer");
+                        EditorGUI.LabelField(infoRect, $"Order {r.sortingOrder}");
                     }
                 }
             };
 
             _list.onReorderCallback = _ =>
             {
-                ApplySorting();
+                var group = (SpriteSortGroup)target;
+                ApplyOrdersFromCurrentList(group);
+                RefreshDerivedItems();
             };
         }
 
-        public override void OnInspectorGUI()
+        private void RefreshDerivedItems()
         {
-            serializedObject.Update();
+            _derivedItems.Clear();
 
-            // Sorting layer popup (writes to _sortingLayerIdProp.intValue).
-            int currentId = _sortingLayerIdProp.intValue;
-            int newId = SortingLayerUtil.PopupSortingLayer("Sorting Layer", currentId);
-            if (newId != currentId)
-                _sortingLayerIdProp.intValue = newId;
+            var group = (SpriteSortGroup)target;
+            group.GetComponentsInChildren(includeInactive: true, result: _derivedItems);
 
-            EditorGUILayout.PropertyField(_baseOrderProp);
+            _derivedItems.Sort(SpriteSortGroup.CompareItemsByRendererOrderThenSibling);
 
-            EditorGUILayout.Space(6);
-
-            using (new EditorGUILayout.HorizontalScope())
-            {
-                if (GUILayout.Button("Collect From Children"))
-                {
-                    CollectFromChildren();
-                }
-
-                if (GUILayout.Button("Apply Now"))
-                {
-                    ApplySorting();
-                }
-            }
-
-            EditorGUILayout.Space(4);
-
-            _list.DoLayoutList();
-
-            if (serializedObject.ApplyModifiedProperties())
-            {
-                ApplySorting();
-            }
+            _list.list = _derivedItems;
         }
 
-        private void CollectFromChildren()
+        private void ApplySorting(SpriteSortGroup group)
         {
-            var group = (SpriteSortGroup)target;
-
-            var found = new List<SpriteSortItem>();
-            group.GetComponentsInChildren(includeInactive: true, result: found);
-
-            // Keep existing ordering when possible, append new ones at the end.
-            var existing = new HashSet<SpriteSortItem>();
-            for (int i = 0; i < _itemsProp.arraySize; i++)
-            {
-                var it = _itemsProp.GetArrayElementAtIndex(i).objectReferenceValue as SpriteSortItem;
-                if (it != null)
-                    existing.Add(it);
-            }
-
-            // Append any not already present.
-            foreach (var it in found)
-            {
-                if (it == null)
-                    continue;
-                if (existing.Contains(it))
-                    continue;
-
-                _itemsProp.arraySize++;
-                _itemsProp.GetArrayElementAtIndex(_itemsProp.arraySize - 1).objectReferenceValue = it;
-            }
-
-            serializedObject.ApplyModifiedProperties();
-            ApplySorting();
-        }
-
-        private void ApplySorting()
-        {
-            var group = (SpriteSortGroup)target;
-
-            // Ensure serialized changes are applied before we read group.Items via its backing list.
+            // Apply serialized edits (sorting layer/base order) before operating.
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
 
-            Undo.RecordObjects(GetAllRenderers(group), "Apply Sprite Sorting");
+            var renderers = GetAllRenderers(group);
+            Undo.RecordObjects(renderers, "Apply Sprite Sorting");
+            Undo.RecordObject(group, "Apply Sprite Sorting");
+
             group.ApplyToRenderers();
 
-            // Mark renderers dirty so scene saves correctly.
-            foreach (var r in GetAllRenderers(group))
+            foreach (var r in renderers)
                 if (r != null)
                     EditorUtility.SetDirty(r);
+
+            EditorUtility.SetDirty(group);
+        }
+
+        private void ApplyOrdersFromCurrentList(SpriteSortGroup group)
+        {
+            serializedObject.ApplyModifiedPropertiesWithoutUndo();
+
+            var renderers = GetAllRenderers(group);
+            Undo.RecordObjects(renderers, "Reorder Sprite Sorting");
+            Undo.RecordObject(group, "Reorder Sprite Sorting");
+
+            int order = group.BaseOrder;
+            for (int i = 0; i < _derivedItems.Count; i++)
+            {
+                var item = _derivedItems[i];
+                if (item == null)
+                    continue;
+
+                var r = item.Renderer;
+                if (r == null)
+                    continue;
+
+                r.sortingLayerID = group.SortingLayerId;
+                r.sortingOrder = order;
+                order++;
+
+                EditorUtility.SetDirty(r);
+            }
 
             EditorUtility.SetDirty(group);
         }
@@ -219,7 +231,7 @@ namespace Design.Animation.Sorting.Editors
             }
             else
             {
-                EditorGUI.HelpBox(rect, "No\nSprite", MessageType.None);
+                EditorGUI.HelpBox(rect, " ", MessageType.None);
             }
         }
     }
