@@ -308,11 +308,11 @@ namespace Netcode.P2P
                     {
                         Debug.Log("SteamID " + playerIDStrings[i] + " could not be parsed as a ulong");
                     }
-                    catch (OverflowException) 
+                    catch (OverflowException)
                     {
                         Debug.Log("SteamID " + playerIDStrings[i] + " was out of range for ulong");
                     }
-                    catch (ArgumentException) 
+                    catch (ArgumentException)
                     {
                         Debug.Log("SteamID " + playerIDStrings[i] + " could not be parsed as a ulong");
                     }
