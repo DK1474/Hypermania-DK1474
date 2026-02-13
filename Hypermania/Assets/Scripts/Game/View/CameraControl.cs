@@ -1,61 +1,46 @@
 using System;
 using System.Collections.Generic;
 using Design;
+using Game.View.Events;
 using UnityEngine;
 using Utils;
 
 namespace Game.View
 {
-    public struct CameraShakeEvent
-    {
-        public Frame StartFrame;
-        public float Intensity;
-        public int Hash;
-    }
-
+    /// <summary>
+    /// Should be placed on a parent of the Camera
+    /// </summary>
+    [RequireComponent(typeof(CameraShakeManager))]
     public class CameraControl : MonoBehaviour
     {
-        private Camera _camera;
-        private HashSet<CameraShakeEvent> _curShakes = new();
-        private Vector3 _shakeOffset;
+        [Serializable]
+        public struct Params
+        {
+            public float CameraSpeed;
+            public float MaxZoom;
+            public float MinZoom;
+            public GlobalConfig Config;
+
+            // Additional area outside the arena bounds that the camera is allowed to see
+            public float Margin;
+
+            // Additional area around the interest points that the camera must see
+            public float Padding;
+            public Camera Camera;
+        }
 
         [SerializeField]
-        private int _shakeWindow = 6;
-
-        [SerializeField]
-        private float _shakeScale = 0.02f;
-
-        [SerializeField]
-        private float _cameraSpeed = 10;
-
-        [SerializeField]
-        private float _maxZoom = 2.5f;
-
-        [SerializeField]
-        private float _minZoom = 1.5f;
-
-        [SerializeField]
-        private GlobalConfig _config;
-
-        // Additional area outside the arena bounds that the camera is allowed to see
-        [SerializeField]
-        private float _margin;
-
-        // Additional area around the interest points that the camera must see
-        [SerializeField]
-        private float _padding;
-
+        private Params _params;
         private List<Vector2> _interestPoints;
 
         void Start()
         {
-            _camera = GetComponent<Camera>();
             _interestPoints = new List<Vector2>();
         }
 
         public void OnValidate()
         {
-            if (_config == null)
+            if (_params.Config == null)
             {
                 throw new InvalidOperationException(
                     "Must set the config field on CameraControl because it reference the arena bounds"
@@ -66,68 +51,6 @@ namespace Game.View
         public void UpdateCamera(List<Vector2> interestPoints, float zoom)
         {
             _interestPoints = interestPoints;
-        }
-
-        public void InvalidateAndApplyShake(Frame start, Frame end, HashSet<CameraShakeEvent> desired)
-        {
-            List<CameraShakeEvent> toRemove = new();
-
-            foreach (var ev in _curShakes)
-            {
-                if (!desired.Contains(ev) && start <= ev.StartFrame && ev.StartFrame <= end)
-                {
-                    toRemove.Add(ev);
-                }
-            }
-
-            foreach (var rem in toRemove)
-            {
-                _curShakes.Remove(rem);
-            }
-
-            foreach (var ev in desired)
-            {
-                if (!_curShakes.Contains(ev))
-                {
-                    _curShakes.Add(ev);
-                }
-            }
-        }
-
-        public void ApplyShake(Frame currentFrame)
-        {
-            //gathering shakes queued up in window
-            float totalIntensity = 0f;
-
-            foreach (var shake in _curShakes)
-            {
-                int frameDiff = currentFrame - shake.StartFrame;
-
-                if (frameDiff >= 0 && frameDiff <= _shakeWindow)
-                {
-                    float t = 1f - (frameDiff / (float)_shakeWindow);
-                    totalIntensity += shake.Intensity * t;
-                }
-            }
-            //calculating shakeOffset
-            if (totalIntensity > 0f)
-            {
-                _shakeOffset = GetDeterministicShake(currentFrame) * totalIntensity * _shakeScale;
-            }
-            else
-            {
-                _shakeOffset = Vector3.zero;
-            }
-        }
-
-        private Vector3 GetDeterministicShake(Frame frame)
-        {
-            //seeding shake based on frame no
-            int seed = frame.No;
-            float x = Mathf.Sin(seed * 12.9898f) * 43758.5453f;
-            float y = Mathf.Sin(seed * 78.233f) * 12345.6789f;
-
-            return new Vector3(Mathf.Repeat(x, 1f) * 2f - 1f, Mathf.Repeat(y, 1f) * 2f - 1f, 0f);
         }
 
         public void Update()
@@ -144,30 +67,29 @@ namespace Game.View
                 min = Vector2.Min(min, point);
                 max = Vector2.Max(max, point);
             }
-            Vector2 padding = new Vector2(_padding, _padding);
+            Vector2 padding = new Vector2(_params.Padding, _params.Padding);
             min -= padding;
             max += padding;
 
             float width = max.x - min.x;
-            float wZoom = Mathf.Clamp(width / 2 / _camera.aspect, _minZoom, _maxZoom);
+            float wZoom = Mathf.Clamp(width / 2 / _params.Camera.aspect, _params.MinZoom, _params.MaxZoom);
 
             float dt = Time.deltaTime;
-            float k = _cameraSpeed;
+            float k = _params.CameraSpeed;
             float a = 1f - Mathf.Exp(-k * dt);
-            _camera.orthographicSize = Mathf.Lerp(_camera.orthographicSize, wZoom, a);
+            _params.Camera.orthographicSize = Mathf.Lerp(_params.Camera.orthographicSize, wZoom, a);
 
             // adjust position with respect to zoom
 
             Vector3 p = transform.position;
-            min.y = max.y - 2 * _camera.orthographicSize;
+            min.y = max.y - 2 * _params.Camera.orthographicSize;
             Vector2 pos2 = Vector2.Lerp(new Vector2(p.x, p.y), (min + max) / 2, a);
-            pos2 += (Vector2)_shakeOffset;
-            float halfHeight = _camera.orthographicSize;
-            float halfWidth = _camera.orthographicSize * _camera.aspect;
+            float halfHeight = _params.Camera.orthographicSize;
+            float halfWidth = _params.Camera.orthographicSize * _params.Camera.aspect;
 
-            float minX = (float)-_config.WallsX + halfWidth - _margin;
-            float maxX = (float)_config.WallsX - halfWidth + _margin;
-            float minY = (float)_config.GroundY + halfHeight - _margin;
+            float minX = (float)-_params.Config.WallsX + halfWidth - _params.Margin;
+            float maxX = (float)_params.Config.WallsX - halfWidth + _params.Margin;
+            float minY = (float)_params.Config.GroundY + halfHeight - _params.Margin;
             float maxY = float.PositiveInfinity;
 
             // Clamping Camera View
@@ -178,7 +100,6 @@ namespace Game.View
 
             pos2.x = Mathf.Clamp(pos2.x, minX, maxX);
             pos2.y = Mathf.Clamp(pos2.y, minY, maxY);
-            //applying shake
             transform.position = new Vector3(pos2.x, pos2.y, p.z);
         }
     }
