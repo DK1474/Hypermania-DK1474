@@ -36,6 +36,7 @@ namespace Game.View
             public InfoOverlayView InfoOverlayView;
             public RoundTimerView RoundTimerView;
             public SfxManager SfxManager;
+            public VfxManager VfxManager;
         }
 
         public FighterView[] Fighters => _fighters;
@@ -126,6 +127,7 @@ namespace Game.View
             }
             _params.SfxManager.InvalidateAndConsume(_rollbackStart, state.Frame);
             _params.CameraShakeManager.InvalidateAndConsume(_rollbackStart, state.Frame);
+            _params.VfxManager.InvalidateAndConsume(_rollbackStart, state.Frame);
             _rollbackStart = Frame.NullFrame;
         }
 
@@ -141,6 +143,7 @@ namespace Game.View
 
         private void DoViewEvents(in GameState state)
         {
+            // TODO: add hit events, have each manager create the proper fx
             for (int i = 0; i < _characters.Length; i++)
             {
                 if (state.Fighters[i].State == CharacterState.Hit && state.Frame == state.Fighters[i].StateStart)
@@ -170,6 +173,26 @@ namespace Game.View
                             }
                         );
                     }
+                }
+                if (
+                    state.Fighters[i].State == CharacterState.BlockCrouch
+                    || state.Fighters[i].State == CharacterState.BlockStand
+                        && state.Frame == state.Fighters[i].StateStart
+                )
+                {
+                    _params.VfxManager.AddDesired(
+                        new ViewEvent<VfxEvent>
+                        {
+                            Event = new VfxEvent
+                            {
+                                Kind = VfxKind.Block,
+                                KnockbackVector = (Vector2)state.Fighters[i].HitProps.Knockback,
+                                Position = (Vector2)state.Fighters[i].HitLocation,
+                            },
+                            StartFrame = state.Frame,
+                            Hash = i,
+                        }
+                    );
                 }
             }
         }

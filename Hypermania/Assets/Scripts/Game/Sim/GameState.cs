@@ -338,11 +338,11 @@ namespace Game.Sim
         {
             if (c.BoxA.Data.Kind == HitboxKind.Hitbox && c.BoxB.Data.Kind == HitboxKind.Hurtbox)
             {
-                return Fighters[c.BoxB.Owner].ApplyHit(Frame, c.BoxA.Data, characters[c.BoxB.Owner]);
+                return Fighters[c.BoxB.Owner].ApplyHit(Frame, c.BoxA.Data, characters[c.BoxB.Owner], c.BoxB.Box.Pos);
             }
             else if (c.BoxA.Data.Kind == HitboxKind.Hurtbox && c.BoxB.Data.Kind == HitboxKind.Hitbox)
             {
-                return Fighters[c.BoxA.Owner].ApplyHit(Frame, c.BoxB.Data, characters[c.BoxA.Owner]);
+                return Fighters[c.BoxA.Owner].ApplyHit(Frame, c.BoxB.Data, characters[c.BoxA.Owner], c.BoxA.Box.Pos);
             }
             else if (c.BoxA.Data.Kind == HitboxKind.Hitbox && c.BoxB.Data.Kind == HitboxKind.Hitbox)
             {
