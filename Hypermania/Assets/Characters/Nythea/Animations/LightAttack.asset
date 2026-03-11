@@ -15,8 +15,7 @@ MonoBehaviour:
   Clip: {fileID: 7400000, guid: 4695765f162af50438845941c5fceac3, type: 2}
   Frames:
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 3165194468
         y:
@@ -28,18 +27,22 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 1
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 3174275447
         y:
@@ -51,18 +54,22 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 1
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 3183702607
         y:
@@ -74,18 +81,22 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 1
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 3183702607
         y:
@@ -97,18 +108,22 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 1
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -120,17 +135,20 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1056760921
         y:
@@ -142,17 +160,20 @@ MonoBehaviour:
           rawValue: 1049521668
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hit
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1058334044
         y:
@@ -164,18 +185,22 @@ MonoBehaviour:
           rawValue: 1038937712
       Props:
         Kind: 1
+        AttackKind: 0
         Damage: 5
-        HitstunTicks: 12
-        BlockstunTicks: 0
+        HitstunTicks: 15
+        BlockstunTicks: 11
+        HitstopTicks: 7
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 2
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -187,17 +212,20 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1056760921
         y:
@@ -209,17 +237,20 @@ MonoBehaviour:
           rawValue: 1049521668
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hit
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1058334044
         y:
@@ -231,18 +262,22 @@ MonoBehaviour:
           rawValue: 1038937712
       Props:
         Kind: 1
+        AttackKind: 0
         Damage: 5
-        HitstunTicks: 12
-        BlockstunTicks: 0
+        HitstunTicks: 15
+        BlockstunTicks: 11
+        HitstopTicks: 7
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 2
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -254,17 +289,20 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1056760921
         y:
@@ -276,17 +314,20 @@ MonoBehaviour:
           rawValue: 1049521668
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hit
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1058334044
         y:
@@ -298,18 +339,22 @@ MonoBehaviour:
           rawValue: 1038937712
       Props:
         Kind: 1
+        AttackKind: 0
         Damage: 5
-        HitstunTicks: 12
-        BlockstunTicks: 0
+        HitstunTicks: 15
+        BlockstunTicks: 11
+        HitstopTicks: 7
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 2
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -321,17 +366,20 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1056760921
         y:
@@ -343,17 +391,20 @@ MonoBehaviour:
           rawValue: 1049521668
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hit
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1058334044
         y:
@@ -365,18 +416,22 @@ MonoBehaviour:
           rawValue: 1038937712
       Props:
         Kind: 1
+        AttackKind: 0
         Damage: 5
-        HitstunTicks: 12
-        BlockstunTicks: 0
+        HitstunTicks: 15
+        BlockstunTicks: 11
+        HitstopTicks: 7
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 2
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -388,17 +443,20 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1056760921
         y:
@@ -410,17 +468,20 @@ MonoBehaviour:
           rawValue: 1049521668
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
-    - Name: Hit
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1058334044
         y:
@@ -432,18 +493,22 @@ MonoBehaviour:
           rawValue: 1038937712
       Props:
         Kind: 1
+        AttackKind: 0
         Damage: 5
-        HitstunTicks: 12
-        BlockstunTicks: 0
+        HitstunTicks: 15
+        BlockstunTicks: 11
+        HitstopTicks: 7
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 2
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -455,18 +520,22 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 3
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -478,18 +547,22 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 3
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -501,18 +574,22 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 3
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -524,18 +601,22 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 3
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -547,18 +628,22 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 3
   - Boxes:
-    - Name: Hurt
-      CenterLocal:
+    - CenterLocal:
         x:
           rawValue: 1009322232
         y:
@@ -570,12 +655,44 @@ MonoBehaviour:
           rawValue: 1069337494
       Props:
         Kind: 0
+        AttackKind: 0
         Damage: 0
         HitstunTicks: 0
         BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
         StartsRhythmCombo: 0
+        KnockdownKind: 0
         Knockback:
           x:
             rawValue: 1065353216
           y:
             rawValue: 0
+    FrameType: 3
+  - Boxes:
+    - CenterLocal:
+        x:
+          rawValue: 1009322232
+        y:
+          rawValue: 1060865510
+      SizeLocal:
+        x:
+          rawValue: 1060080258
+        y:
+          rawValue: 1069337494
+      Props:
+        Kind: 0
+        AttackKind: 0
+        Damage: 0
+        HitstunTicks: 0
+        BlockstunTicks: 0
+        HitstopTicks: 0
+        BlockstopTicks: 0
+        StartsRhythmCombo: 0
+        KnockdownKind: 0
+        Knockback:
+          x:
+            rawValue: 1065353216
+          y:
+            rawValue: 0
+    FrameType: 3

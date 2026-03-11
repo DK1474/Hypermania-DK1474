@@ -176,7 +176,7 @@ namespace Netcode.Rollback.Network
 
             ConnectionStatus[] peerConnectStatus = new ConnectionStatus[numPlayers];
             for (int i = 0; i < numPlayers; i++)
-                peerConnectStatus[i] = ConnectionStatus.Default;
+                peerConnectStatus[i] = ConnectionStatus.DEFAULT;
 
             Dictionary<Frame, InputBytes> recvInputs = new Dictionary<Frame, InputBytes>
             {
@@ -244,12 +244,12 @@ namespace Netcode.Rollback.Network
             {
                 throw new InvalidOperationException("not synchronized");
             }
-            ulong now = Helpers.MillisSinceEpoch();
-            ulong secs = (now - _statsStartTime) / 1000;
-            if (secs == 0)
-            {
-                throw new InvalidOperationException("not synchronized");
-            }
+            // ulong now = Helpers.MillisSinceEpoch();
+            // ulong secs = (now - _statsStartTime) / 1000;
+            // if (secs == 0)
+            // {
+            //     throw new InvalidOperationException("not synchronized");
+            // }
 
             return new NetworkStats
             {
@@ -408,7 +408,7 @@ namespace Netcode.Rollback.Network
 
         private void SendPendingOutput(ConnectionStatus[] connectStatus)
         {
-            MessageBody.Input body = MessageBody.Input.Default;
+            MessageBody.Input body = MessageBody.Input.DEFAULT;
             if (_pendingOutput.Count == 0)
             {
                 return;

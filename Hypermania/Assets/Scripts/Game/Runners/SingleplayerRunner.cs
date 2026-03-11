@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Design;
 using Game.Sim;
-using Game.View;
 using Game.View.Overlay;
 using Netcode.P2P;
 using Netcode.Rollback;
@@ -13,7 +11,7 @@ namespace Game.Runners
 {
     public class SingleplayerRunner : GameRunner
     {
-        protected SyncTestSession<GameState, GameInput, SteamNetworkingIdentity> _session;
+        protected SyncTestSession<GameState, GameInput> _session;
 
         public override void Init(
             List<(PlayerHandle playerHandle, PlayerKind playerKind, SteamNetworkingIdentity address)> players,
@@ -92,7 +90,7 @@ namespace Game.Runners
                         _view.RollbackRender(_curState);
                         break;
                     case RollbackRequestKind.AdvanceFrameReq:
-                        _curState.Advance(request.GetAdvanceFrameRequest().Inputs, _characters, _config);
+                        _curState.Advance(_options, request.GetAdvanceFrameRequest().Inputs);
                         _view.RollbackRender(_curState);
                         break;
                 }
@@ -104,7 +102,7 @@ namespace Game.Runners
                 return;
             }
             InfoOverlayDetails details = new InfoOverlayDetails { HasPing = false, Ping = 0 };
-            _view.Render(_curState, _config, details);
+            _view.Render(_curState, _options, details);
         }
     }
 }

@@ -5,8 +5,10 @@ namespace Game
     public enum CharacterState
     {
         Hit = 0,
-        Walk = 1,
+        ForwardWalk = 1,
+        BackWalk = 28,
         Jump = 2,
+        PreJump = 29,
         Idle = 3,
         Knockdown = 4,
         LightAttack = 5,
@@ -29,12 +31,17 @@ namespace Game
         BlockStand = 22,
         BlockCrouch = 23,
         Running = 24,
+        ForwardAirDash = 25,
+        BackAirDash = 26,
+        Crouch = 27,
+        Falling = 30,
+        Landing = 31,
     }
 
     [Serializable]
     public enum Character
     {
-        SampleFighter = 0,
+        // SampleFighter = 0,
         Nythea = 1,
     }
 }
